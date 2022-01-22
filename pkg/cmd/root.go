@@ -8,9 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/eviltomorrow/robber-account/pkg/client"
 	"github.com/eviltomorrow/robber-collector/internal/conf"
 	"github.com/eviltomorrow/robber-collector/internal/server"
+	"github.com/eviltomorrow/robber-collector/pkg/client"
 	"github.com/eviltomorrow/robber-collector/pkg/scheduler"
 	"github.com/eviltomorrow/robber-core/pkg/mongodb"
 	"github.com/eviltomorrow/robber-core/pkg/pid"

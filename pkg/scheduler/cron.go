@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/eviltomorrow/robber-core/pkg/zlog"
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 	"go.uber.org/zap"
 )
 

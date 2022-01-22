@@ -68,7 +68,7 @@ build: fmt
 	@mkdir -p examples/etc
 	@cp configs/config.toml examples/etc/config.toml
 	@echo "$(CGREEN)=> Building binary...$(CEND)"
-	go build -race ${LDFLAGS} ${GCFLAGS} -o examples/bin/robber-collector.go cmd/main.go
+	go build -race ${LDFLAGS} ${GCFLAGS} -o examples/bin/robber-collector cmd/main.go
 	@echo "$(CGREEN)=> Build Success!$(CEND)"
 
 
