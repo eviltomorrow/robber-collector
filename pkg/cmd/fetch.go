@@ -25,7 +25,7 @@ var fetchCmd = &cobra.Command{
 		if err != nil {
 			log.Fatalf("CollectMetadataToMongoDB failure, nest error: %v\r\n", err)
 		}
-		log.Printf("[%s]Fetch success, date: %v, count: %v\r\n", color.GreenString("success"), date, fetchCount)
+		log.Printf("[%s] Fetch success, date: %v, count: %v\r\n", color.GreenString("success"), date, fetchCount)
 	},
 }
 
