@@ -18,7 +18,7 @@ host = "0.0.0.0"
 port = 27320
 
 [collect]
-source = "tencent"
+source = "net126"
 code-list = [
     "sh688***",
 	"sh605***",

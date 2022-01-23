@@ -101,6 +101,9 @@ func registerCleanFuncs() {
 }
 
 func setupCfg() {
+	if err := cfg.FindAndLoad(cfgPath, nil); err != nil {
+		log.Fatalf("[Fatal] FindAndLoad failure, nest error: %v\r\n", err)
+	}
 	global, prop, err := zlog.InitLogger(&zlog.Config{
 		Level:            cfg.Log.Level,
 		Format:           cfg.Log.Format,
@@ -124,9 +127,12 @@ func setupCfg() {
 func setupVars() {
 	server.Host = cfg.Server.Host
 	server.Port = cfg.Server.Port
+	server.Source = cfg.Collect.Source
 	server.Endpoints = cfg.Etcd.Endpoints
 
 	mongodb.DSN = cfg.MongoDB.DSN
 
 	client.EtcdEndpoints = cfg.Etcd.Endpoints
+
+	scheduler.Source = cfg.Collect.Source
 }

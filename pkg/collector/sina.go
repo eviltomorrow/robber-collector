@@ -32,9 +32,10 @@ var (
 )
 
 func FetchMetadataFromSina(codes []string) ([]*model.Metadata, error) {
-	data, err := httpclient.GetHTTP(fmt.Sprintf("http://hq.sinajs.cn/list=%s", strings.Join(codes, ",")), 20*time.Second, httpclient.DefaultHeader)
+	var url = fmt.Sprintf("http://hq.sinajs.cn/list=%s", strings.Join(codes, ","))
+	data, err := httpclient.GetHTTP(url, 20*time.Second, httpclient.DefaultHeader)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("url: %v, nest error: %v", url, err)
 	}
 
 	var result = make([]*model.Metadata, 0, len(codes))
@@ -45,8 +46,9 @@ func FetchMetadataFromSina(codes []string) ([]*model.Metadata, error) {
 	for key, val := range kv {
 		metadata, err := parseSinaLineToMetadata(key, val)
 		if err != nil {
-			zlog.Error("parseSinaLineToMetadata", zap.String("key", key), zap.String("val", val), zap.Error(err))
-		} else {
+			zlog.Error("parseSinaLineToMetadata failure", zap.String("key", key), zap.String("val", val), zap.Error(err))
+		}
+		if metadata != nil {
 			result = append(result, metadata)
 		}
 	}
@@ -81,7 +83,7 @@ func parseSinaDataToMap(data string) (map[string]string, error) {
 
 func parseSinaLineToMetadata(code, data string) (*model.Metadata, error) {
 	if len(data) == 0 {
-		return nil, ErrSinaInvalidFormat
+		return nil, nil
 	}
 
 	var begin = strings.Index(strings.TrimSpace(data), `"`)
