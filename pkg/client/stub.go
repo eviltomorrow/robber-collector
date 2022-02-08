@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/eviltomorrow/robber-collector/internal/server"
@@ -21,10 +20,9 @@ var (
 	EtcdEndpoints = []string{
 		"127.0.0.1:2379",
 	}
-	mut sync.Mutex
 )
 
-func NewClientForDatasource() (pb.CollectorClient, func(), error) {
+func init() {
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   EtcdEndpoints,
 		DialTimeout: 5 * time.Second,
@@ -38,18 +36,17 @@ func NewClientForDatasource() (pb.CollectorClient, func(), error) {
 		},
 	})
 	if err != nil {
-		return nil, nil, err
+		panic(fmt.Errorf("create etcd client failure, nest error: %v", err))
 	}
 
 	builder := &grpclb.Builder{
 		Client: cli,
 	}
 
-	mut.Lock()
-	defer mut.Unlock()
-
 	resolver.Register(builder)
+}
 
+func NewClientForDatasource() (pb.CollectorClient, func(), error) {
 	target := fmt.Sprintf("etcd:///%s", server.Key)
 	conn, err := grpc.DialContext(
 		context.Background(),
