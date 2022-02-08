@@ -116,6 +116,8 @@ github.com/eviltomorrow/robber-core v0.0.0-20220113063455-98d9cd98e49f h1:5oaNS7
 github.com/eviltomorrow/robber-core v0.0.0-20220113063455-98d9cd98e49f/go.mod h1:b0n/KqVU26dL1P+QX2AR4Rxumz6X1FziVJ94AfSm+Sc=
 github.com/eviltomorrow/robber-core v0.0.0-20220123030150-2859e25456e7 h1:ZkG++8W3yYuyT2Oq3BjrcaEzRUS2PiDj1NPtcXT12ks=
 github.com/eviltomorrow/robber-core v0.0.0-20220123030150-2859e25456e7/go.mod h1:b0n/KqVU26dL1P+QX2AR4Rxumz6X1FziVJ94AfSm+Sc=
+github.com/eviltomorrow/robber-core v0.0.0-20220208095215-3df6a3e53224 h1:YosWILjWZqMPzCb88oPo9oxNImVz7gADkhO5StZLSVs=
+github.com/eviltomorrow/robber-core v0.0.0-20220208095215-3df6a3e53224/go.mod h1:b0n/KqVU26dL1P+QX2AR4Rxumz6X1FziVJ94AfSm+Sc=
 github.com/eviltomorrow/robber-notification v0.0.0-20220113105258-0c4f7224a3cb h1:x7EAfyyCLqJ+169UKgbmhaF2thJa9aWf3Clr3Arh2OY=
 github.com/eviltomorrow/robber-notification v0.0.0-20220113105258-0c4f7224a3cb/go.mod h1:u/5O8JwK1JxOhKytTQQsCd2z+jyQh2hPfARaBMjb8dM=
 github.com/eviltomorrow/robber-notification v0.0.0-20220208092718-5dafbf406395 h1:1LNYCO82e+3diN0RClTKeafRtZsiZhelrgB3Tjhqd6g=

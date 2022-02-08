@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/BurntSushi/toml v1.0.0
-	github.com/eviltomorrow/robber-core v0.0.0-20220123030150-2859e25456e7
+	github.com/eviltomorrow/robber-core v0.0.0-20220208095215-3df6a3e53224
 	github.com/eviltomorrow/robber-notification v0.0.0-20220208092718-5dafbf406395
 	github.com/eviltomorrow/robber-repository v0.0.0-20220208092621-6ac2a9df5bce
 	github.com/fatih/color v1.13.0
