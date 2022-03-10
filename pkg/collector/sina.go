@@ -32,8 +32,13 @@ var (
 )
 
 func FetchMetadataFromSina(codes []string) ([]*model.Metadata, error) {
-	var url = fmt.Sprintf("http://hq.sinajs.cn/list=%s", strings.Join(codes, ","))
-	data, err := httpclient.GetHTTP(url, 20*time.Second, httpclient.DefaultHeader)
+	var (
+		url    = fmt.Sprintf("https://hq.sinajs.cn/list=%s", strings.Join(codes, ","))
+		header = httpclient.DefaultHeader
+	)
+	header["Referer"] = "https://finance.sina.com.cn"
+
+	data, err := httpclient.GetHTTP(url, 20*time.Second, header)
 	if err != nil {
 		return nil, fmt.Errorf("url: %v, nest error: %v", url, err)
 	}
