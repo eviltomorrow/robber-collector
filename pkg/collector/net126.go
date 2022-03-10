@@ -12,6 +12,16 @@ import (
 	"go.uber.org/zap"
 )
 
+var Net126Header = map[string]string{
+	"Connection":                "keep-alive",
+	"Cache-Control":             "max-age=0",
+	"Upgrade-Insecure-Requests": "1",
+	"User-Agent":                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
+	"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+	"Accept-Encoding":           "gzip, deflate",
+	"Accept-Language":           "zh-CN,zh;q=0.9,en;q=0.8,da;q=0.7,pt;q=0.6,ja;q=0.5",
+}
+
 func FetchMetadataFromNet126(codes []string) ([]*model.Metadata, error) {
 	var c = make([]string, 0, len(codes))
 	for _, code := range codes {
@@ -27,7 +37,7 @@ func FetchMetadataFromNet126(codes []string) ([]*model.Metadata, error) {
 	}
 
 	var url = fmt.Sprintf("https://api.money.126.net/data/feed/%s,money.api", strings.Join(c, ","))
-	data, err := httpclient.GetHTTP(url, 20*time.Second, httpclient.DefaultHeader)
+	data, err := httpclient.GetHTTP(url, 20*time.Second, Net126Header)
 	if err != nil {
 		return nil, fmt.Errorf("url: %v, nest error: %v", url, err)
 	}
