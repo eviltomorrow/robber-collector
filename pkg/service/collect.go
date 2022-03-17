@@ -39,7 +39,7 @@ func CollectMetadataToMongoDB(today time.Time, source string, randSleep bool) (s
 			metadata, err := fetchMetadata(codes)
 			if err != nil {
 				retrytimes++
-				if retrytimes == 10 {
+				if retrytimes == 3 {
 					return date, count, fmt.Errorf("FetchMeatadata failure, nest error: %v, source: [%v], codes: %v", err, source, codes)
 				} else {
 					time.Sleep(30 * time.Second)

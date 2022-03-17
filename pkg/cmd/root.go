@@ -114,7 +114,8 @@ func setupCfg() {
 			MaxDays:    30,
 			MaxBackups: 30,
 		},
-		DisableStacktrace: true,
+		DisableStacktrace:   true,
+		DisableErrorVerbose: true,
 	})
 	if err != nil {
 		log.Fatalf("[Fatal] Setup log config failure, nest error: %v\r\n", err)

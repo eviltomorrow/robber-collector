@@ -9,7 +9,6 @@ import (
 	"github.com/eviltomorrow/robber-collector/pkg/model"
 	"github.com/eviltomorrow/robber-core/pkg/httpclient"
 	"github.com/eviltomorrow/robber-core/pkg/zlog"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -28,8 +27,7 @@ const (
 )
 
 var (
-	ErrSinaInvalidFormat = errors.New("invalid data format")
-	SinaHeader           = map[string]string{
+	SinaHeader = map[string]string{
 		"Referer":                   "https://finance.sina.com.cn",
 		"Connection":                "keep-alive",
 		"Cache-Control":             "max-age=0",
@@ -38,6 +36,12 @@ var (
 		"Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
 		"Accept-Encoding":           "gzip, deflate",
 		"Accept-Language":           "zh-CN,zh;q=0.9,en;q=0.8,da;q=0.7,pt;q=0.6,ja;q=0.5",
+	}
+	Matcher = map[string]int{
+		"sh68": 34,
+		"sh60": 33,
+		"sz0":  33,
+		"sz3":  33,
 	}
 )
 
@@ -57,7 +61,7 @@ func FetchMetadataFromSina(codes []string) ([]*model.Metadata, error) {
 		zlog.Error("parseSinaDataToMap failure", zap.String("data", data), zap.Error(err))
 	}
 	for key, val := range kv {
-		metadata, err := parseSinaLineToMetadata(key, val)
+		metadata, err := parseSinaLineToMetadata(key, val, Matcher)
 		if err != nil {
 			zlog.Error("parseSinaLineToMetadata failure", zap.String("key", key), zap.String("val", val), zap.Error(err))
 		}
@@ -94,48 +98,50 @@ func parseSinaDataToMap(data string) (map[string]string, error) {
 	return result, nil
 }
 
-func parseSinaLineToMetadata(code, data string) (*model.Metadata, error) {
+func parseSinaLineToMetadata(code, data string, matcher map[string]int) (*model.Metadata, error) {
 	if len(data) == 0 {
 		return nil, nil
 	}
-
-	var begin = strings.Index(strings.TrimSpace(data), `"`)
-	var end = strings.LastIndex(strings.TrimSpace(data), `"`)
+	var (
+		begin = strings.Index(strings.TrimSpace(data), `"`)
+		end   = strings.LastIndex(strings.TrimSpace(data), `"`)
+	)
 
 	if begin == -1 || end == -1 || begin == end {
-		return nil, ErrSinaInvalidFormat
+		return nil, fmt.Errorf("panic: begin: %v, end: %v", begin, end)
+	} else {
+		if strings.TrimSpace(data[begin+1:end]) == "" {
+			return nil, nil
+		}
 	}
-
 	var attr = strings.Split(data[begin+1:end], ",")
 	if len(attr) == 1 {
-		return nil, ErrSinaInvalidFormat
+		return nil, fmt.Errorf("panic: attr foramt is unknown, nest attr: %v", attr)
 	}
+
 	if len(attr) >= 2 && attr[len(attr)-1] == "" {
 		attr = attr[:len(attr)-1]
 	}
+
 	switch {
 	case strings.HasPrefix(code, "sh68"):
-		if len(attr) != 34 {
-			zlog.Warn("Invalid trade data", zap.String("code", code), zap.String("data", data), zap.Int("len", len(attr)))
-			return nil, ErrSinaInvalidFormat
+		if len(attr) != matcher["sh68"] {
+			return nil, fmt.Errorf("format is changed[sh68xxxx], expect: %v, actual: %v", matcher["sh68"], len(attr))
 		}
 	case strings.HasPrefix(code, "sh60"):
-		if len(attr) != 33 {
-			zlog.Warn("Invalid trade data", zap.String("code", code), zap.String("data", data), zap.Int("len", len(attr)))
-			return nil, ErrSinaInvalidFormat
+		if len(attr) != matcher["sh60"] {
+			return nil, fmt.Errorf("format is changed[sh60xxxx] expect: %v, actual: %v", matcher["sh60"], len(attr))
 		}
 	case strings.HasPrefix(code, "sz0"):
-		if len(attr) != 33 {
-			zlog.Warn("Invalid trade data", zap.String("code", code), zap.String("data", data), zap.Int("len", len(attr)))
-			return nil, ErrSinaInvalidFormat
+		if len(attr) != matcher["sz0"] {
+			return nil, fmt.Errorf("format is changeds[sz0xxxxx] expect: %v, actual: %v", matcher["sz0"], len(attr))
 		}
 	case strings.HasPrefix(code, "sz3"):
-		if len(attr) != 33 {
-			zlog.Warn("Invalid trade data", zap.String("code", code), zap.String("data", data), zap.Int("len", len(attr)))
-			return nil, ErrSinaInvalidFormat
+		if len(attr) != matcher["sz3"] {
+			return nil, fmt.Errorf("format is changeds[sz3xxxxx] expect: %v, actual: %v", matcher["sz3"], len(attr))
 		}
 	default:
-		return nil, fmt.Errorf("no support code[%v]", code)
+		return nil, fmt.Errorf("panic: no support code[%v]", code)
 	}
 
 	var md = &model.Metadata{
